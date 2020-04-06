@@ -9,7 +9,7 @@ for i in range(10):
     countries = ['india','pakistan','egypt','ireland','australia','namibia','kenya','germany','poland']
     
     port = random.choice(countries) 
-    cmd = 'wget "http://localhost:1111/json/' + str(port) + ' " -O /dev/null '
+    cmd = 'wget "http://localhost:5000/json/' + str(port) + ' " -O /dev/null '
     print(cmd)
     os.system(cmd)
     ed = time.time()
