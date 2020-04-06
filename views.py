@@ -69,20 +69,5 @@ def get_json(country):
         print(config.url)
     return jsonify(latest_val)
 
-@app.route('/cel/')
-def check():
-    url = 'abc'
-    val = {
-  "Cases": 2567, 
-  "Country": "India", 
-  "Date": "2020-04-03T00:00:00Z", 
-  "Lat": 0, 
-  "Lon": 0, 
-  "Province": "", 
-  "Status": "confirmed"
-}
-    val = json.dumps(val)
-    red.delay(url,val)
-    return 'working'
 if __name__ == "__main__":
     app.run(debug=True,host='localhost',port='1111') 

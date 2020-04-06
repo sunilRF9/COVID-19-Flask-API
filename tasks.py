@@ -12,6 +12,6 @@ def red(url,val):
     val = json.loads(val)
     df = pd.DataFrame(val,index=[0])
     #print(df) 
-    redis.setex(url,60,str(df))
+    redis.setex(url,3600,str(df))
     res = redis.get(url)
     return (str(res))
