@@ -1,3 +1,7 @@
+pandas
+celery
+redis
+uWSGI
 flask
 requests
 json2html

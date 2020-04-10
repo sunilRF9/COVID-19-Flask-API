@@ -1,10 +1,11 @@
 from __future__ import absolute_import
 import json
-import cv2
 from celery_app import app
 import os
 import redis
 import pandas as pd
+#DOCKER COMPOSE VERSION#
+#redis = redis.Redis(host = 'redis',port = 6379, decode_responses=True)
 redis = redis.Redis()
 
 @app.task

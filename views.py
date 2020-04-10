@@ -4,17 +4,22 @@ import os
 from tasks import red
 import json
 from json2html import *
+#from fetch_redis import *
 import requests
 app = Flask(__name__)
 cache={}
+global url
 @app.route('/html/<country>/')
 def get(country):
     #print(f"served from {os.getpid()}")
     url = config.url.format(country)
-    if url in cache:
+    url = url.encode()
+    print(url)
+    #cache_red(url)
+    if url in cache_red(url):
         #print('FROM CACHE:\n')
-        cached_val = {"Cached":"True","Data":cache[url][-1]}
-        print(cached_val)
+        cached_val = {"Cached":"True","Data":url}#cache[url][-1]}
+        #print(cached_val)
         formatted_table = json2html.convert(json = cached_val)
         with open("templates/index.html","w") as f:
             f.write(formatted_table)
@@ -70,4 +75,4 @@ def get_json(country):
     return jsonify(latest_val)
 
 if __name__ == "__main__":
-    app.run(debug=True,host='localhost',port='1111') 
+    app.run(debug=True,host='0.0.0.0',port=5000)
