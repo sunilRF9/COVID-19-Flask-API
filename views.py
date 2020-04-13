@@ -4,7 +4,7 @@ import os
 from tasks import red
 import json
 from json2html import *
-#from fetch_redis import *
+from fetch_redis import *
 import requests
 app = Flask(__name__)
 cache={}
@@ -12,20 +12,25 @@ global url
 @app.route('/html/<country>/')
 def get(country):
     #print(f"served from {os.getpid()}")
-    url = config.url.format(country)
-    url = url.encode()
-    print(url)
-    #cache_red(url)
-    if url in cache_red(url):
-        #print('FROM CACHE:\n')
-        cached_val = {"Cached":"True","Data":url}#cache[url][-1]}
+    try:
+        print('in try block')
+        url = config.url.format(country)
+        url_enc = url.encode()
+        #cache_red(url)
+        redis_data = read_redis(url_enc)
+        cached_val = json.loads(redis_data)
+        print('Serving From Redis')
+        #if url in cache_red(url):
+            #print('FROM CACHE:\n')
+        #cached_val = {"Cached":"True","Data":redis_data}#cache[url][-1]}
         #print(cached_val)
         formatted_table = json2html.convert(json = cached_val)
         with open("templates/index.html","w") as f:
             f.write(formatted_table)
         return render_template('index.html')
     #print(app.config)
-    try:
+    except:
+        print('reachd except')
         val = requests.get(url).text
         val = json.loads(val)
         cache[url] = val
@@ -39,9 +44,9 @@ def get(country):
         formatted_table = json2html.convert(json = latest_val)
         with open("templates/index.html","w") as f:
             f.write(formatted_table)
-    except:
-        print('invalid country')
-        print(config.url)
+    #finally:
+    #    print('invalid country')
+    #    print(config.url)
         #index= open("templates/index.html","w")
         #index.write(formatted_table)
         #index.close()
