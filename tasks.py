@@ -3,7 +3,6 @@ import json
 from celery_app import app
 import os
 import redis
-import pandas as pd
 #DOCKER COMPOSE VERSION#
 #redis = redis.Redis(host = 'redis',port = 6379, decode_responses=True)
 redis = redis.Redis()
@@ -15,4 +14,4 @@ def red(url,val):
     #print(df) 
     redis.setex(url,3600,str(val))
     #res = redis.get(url)
-    return 'wrote to Cache'
+    return 'Wrote to cache'

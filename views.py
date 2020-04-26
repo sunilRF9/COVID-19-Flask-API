@@ -13,24 +13,31 @@ global url
 def get(country):
     #print(f"served from {os.getpid()}")
     try:
-        print('in try block')
         url = config.url.format(country)
         url_enc = url.encode()
+        #print(url_enc)
         #cache_red(url)
         redis_data = read_redis(url_enc)
-        cached_val = json.loads(redis_data)
+        #print(redis_data.decode('utf-8'))
+        redis_data = str(redis_data)
+        #print(type(redis_data))
+        #print(redis_data)
+        cached_val = jsonify(redis_data)
+        #print(cached_val)
+        #print(type(cached_val))
         print('Serving From Redis')
         #if url in cache_red(url):
             #print('FROM CACHE:\n')
         #cached_val = {"Cached":"True","Data":redis_data}#cache[url][-1]}
         #print(cached_val)
-        formatted_table = json2html.convert(json = cached_val)
+        formatted_table = json2html.convert(json =redis_data)
         with open("templates/index.html","w") as f:
             f.write(formatted_table)
         return render_template('index.html')
     #print(app.config)
-    except:
-        print('reachd except')
+    except Exception as e:
+        print(e)
+        print('not found in cache')
         val = requests.get(url).text
         val = json.loads(val)
         cache[url] = val
@@ -57,13 +64,26 @@ def get(country):
 @app.route('/json/<country>/')
 def get_json(country):
     print(f"served from {os.getpid()}")
-    url = config.url.format(country)
-    if url in cache:
-        #print('FROM CACHE:\n')
-        cached_val = {"Cached":"True","Data":cache[url][-1]}
-        print(cached_val)
-    #print(app.config)
     try:
+        url = config.url.format(country)
+        url_enc = url.encode()
+        #print(url_enc)
+        #cache_red(url)
+        redis_data = read_redis(url_enc)
+        print(redis_data.decode('utf-8'))
+        #print(redis_data)
+        cached_val = jsonify(redis_data)
+        print('Serving From Redis')
+        return cached_val
+    #url = config.url.format(country)
+    #if url in cache:
+    #    #print('FROM CACHE:\n')
+    #    cached_val = {"Cached":"True","Data":cache[url][-1]}
+    #    print(cached_val)
+    #print(app.config)
+    except Exception as e:
+        print(e)
+        print('not found in cache')
         val = requests.get(url).text
         val = json.loads(val)
         cache[url] = val
@@ -80,4 +100,4 @@ def get_json(country):
     return jsonify(latest_val)
 
 if __name__ == "__main__":
-    app.run(debug=True,host='0.0.0.0',port=5000)
+    app.run(debug=False,host='0.0.0.0',port=5000)
