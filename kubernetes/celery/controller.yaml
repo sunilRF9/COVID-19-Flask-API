@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    component: celery
+  name: celery-controller
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: taskQueue
+        component: celery
+    spec:
+      containers:
+      - name: celery-worker
+        image: sunil96/corona_worker_1:v1
+        command: ['celery', '-A', 'tasks', 'worker', '--loglevel=info']
+        ports:
+        - containerPort: 5672
+        resources:
+          limits:
+            cpu: 100m
+        env:
+        - name: BROKER_URL
+          value: amqp://admin:admin@rabbit:5672
+        - name: RESULT_BACKEND_URL
+          value: redis://redis-master:6379/1
