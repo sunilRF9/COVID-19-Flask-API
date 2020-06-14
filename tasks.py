@@ -1,17 +1,17 @@
 from __future__ import absolute_import
 import json
-import cv2
 from celery_app import app
 import os
 import redis
-import pandas as pd
+#DOCKER COMPOSE VERSION#
+#redis = redis.Redis(host = 'redis',port = 6379, decode_responses=True)
 redis = redis.Redis()
 
 @app.task
 def red(url,val):
     val = json.loads(val)
-    df = pd.DataFrame(val,index=[0])
+    #df = pd.DataFrame(val,index=[0])
     #print(df) 
-    redis.setex(url,60,str(df))
-    res = redis.get(url)
-    return (str(res))
+    redis.setex(url,3600,str(val))
+    #res = redis.get(url)
+    return 'Wrote to cache'

@@ -3,13 +3,13 @@ import os
 import time
 import random
 tm = []
-for i in range(50):
+for i in range(10):
     st = time.time()
     #port = randint(3002, 3012)
     countries = ['india','pakistan','egypt','ireland','australia','namibia','kenya','germany','poland']
     
     port = random.choice(countries) 
-    cmd = 'wget "http://localhost:1111/json/' + str(port) + ' " -O /dev/null '
+    cmd = 'wget "http://0.0.0.0:5000/json/' + str(port) + ' " -O /dev/null '
     print(cmd)
     os.system(cmd)
     ed = time.time()
