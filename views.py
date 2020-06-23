@@ -11,30 +11,17 @@ cache={}
 global url
 @app.route('/html/<country>/')
 def get(country):
-    #print(f"served from {os.getpid()}")
     try:
         url = config.url.format(country)
         url_enc = url.encode()
-        #print(url_enc)
-        #cache_red(url)
         redis_data = read_redis(url_enc)
-        #print(redis_data.decode('utf-8'))
         redis_data = str(redis_data)
-        #print(type(redis_data))
-        #print(redis_data)
         cached_val = jsonify(redis_data)
-        #print(cached_val)
-        #print(type(cached_val))
         print('Serving From Redis')
-        #if url in cache_red(url):
-            #print('FROM CACHE:\n')
-        #cached_val = {"Cached":"True","Data":redis_data}#cache[url][-1]}
-        #print(cached_val)
         formatted_table = json2html.convert(json =redis_data)
         with open("templates/index.html","w") as f:
             f.write(formatted_table)
         return render_template('index.html')
-    #print(app.config)
     except Exception as e:
         print(e)
         print('not found in cache')
@@ -47,18 +34,10 @@ def get(country):
         #print('initiating cel task')
         red.delay(url,temp)
         print('task loaded') 
-        #print(latest_val)
         formatted_table = json2html.convert(json = latest_val)
         with open("templates/index.html","w") as f:
             f.write(formatted_table)
-    #finally:
-    #    print('invalid country')
-    #    print(config.url)
-        #index= open("templates/index.html","w")
-        #index.write(formatted_table)
-        #index.close()
     return render_template('index.html')
-    #return {"cached":"False","data":val[-1]}
 
 #This route provides JSON data 
 @app.route('/json/<country>/')
@@ -67,20 +46,11 @@ def get_json(country):
     try:
         url = config.url.format(country)
         url_enc = url.encode()
-        #print(url_enc)
-        #cache_red(url)
         redis_data = read_redis(url_enc)
         print(redis_data.decode('utf-8'))
-        #print(redis_data)
         cached_val = jsonify(redis_data)
         print('Serving From Redis')
         return cached_val
-    #url = config.url.format(country)
-    #if url in cache:
-    #    #print('FROM CACHE:\n')
-    #    cached_val = {"Cached":"True","Data":cache[url][-1]}
-    #    print(cached_val)
-    #print(app.config)
     except Exception as e:
         print(e)
         print('not found in cache')
@@ -90,10 +60,8 @@ def get_json(country):
         latest_val = val[-1]
         #CELERY TASK
         temp = json.dumps(latest_val)
-        #print('initiating cel task')
         red.delay(url,temp)
         print('task loaded') 
-        #print(latest_val)
     except:
         print('invalid country')
         print(config.url)
