@@ -9,10 +9,3 @@ def read_redis(data):
         if data==d:return redis.get(data)
             
     return redis.get(data)
-             
-
-
-if __name__ == "__main__":
-    data = b"https://api.covid19api.com/total/country/india/status/confirmed"
-    ans = read_redis(data)
-    print(ans)
